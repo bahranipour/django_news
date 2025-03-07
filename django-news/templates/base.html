@@ -1,0 +1,37 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'js/bootstrap.min.js' %}"></script>
+    <title>{% block title %}{% endblock title %}</title>
+</head>
+<body class="bg-light">
+    <nav class="navbar navbar-expand-md bg-dark navbar-dark" dir="rtl">
+        <a href="{% url 'news_list' %}" class="navbar-brand">اخبار فناوری</a>
+        <button type="button" class="navbar-toggler" data-toggle="collapse" data-target="#myNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="myNav">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a href="{% url 'news_list' %}" class="nav-link">خانه</a>
+                </li>
+                <li class="nav-item active">
+                    <a href="{% url 'about' %}" class="nav-link">دربار ما</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        {% block content %}{% endblock content %}
+    </div>
+    <hr>
+    <p class="text-center">NEWS Website created with &#x2665;&#xfe0f; django  </p>
+    <p class="text-center">Fouad Bhrani Pour</p>
+</body>
+</html>

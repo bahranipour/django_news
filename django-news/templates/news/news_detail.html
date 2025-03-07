@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% block title %}{{ news.title }}{% endblock title %}
+{% block content %}
+    <div class="container mt-4">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags}} text-right">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+        <div class="row mt-3">
+            <div class="col-md-10 mx-auto">
+                <div class="card mb-3 text-right p-3" dir="rtl">
+                    {% if news.image %}
+                        <img src="{{ news.image.url }}" alt="{{news.title}}" class="card-img-top mx-auto d-block" style="width: 18rem;">
+                    {% endif %}
+                    <div class="card-body">
+                        <p class="card-text">{{ news.content }}</p>
+                        <p class="text-muted">نوشته شده توسط: {{ news.author }}</p>
+                        <p class="text-muted">دسته بندی: <a href="{% url 'news_by_category' category_id=news.category.id %}">{{ news.category.name }}</a></p>
+                        <p class="text-muted">
+                            تگ ها:
+                            {% for tag in news.tags.all %}
+                                <a href="{% url 'news_by_tag' tag_id=tag.id %}">{{ tag.name }}</a>{% if not forloop.last %},{% endif %}
+                            {% endfor %}
+                        </p>
+                        <p class="text-muted">تاریخ ایجاد: {{ news.created_at }}</p>
+                        <p class="text-muted">آخرین بروزرسانی: {{ news.updated_at }}</p>
+                        <p class="text-muted">تعداد نظرات: {{ news.comments.count }}</p>
+                        <hr>
+                        <h2 class="text-center">نظرات</h2>
+                        {% for comment in comments %}
+                            <div class="card text-right" dir="rtl">
+                                <div class="card-body bg-light">
+                                    <h5 class="card-title">{{ comment.name }}</h5>
+                                    <p class="card-text">{{ comment.content }}</p>
+                                    <p class="text-muted">تاریخ: {{ comment.created_at }}</p>
+                                </div>
+                            </div>
+                            <br>
+                        {% empty %}
+                            <div class="alert alert-warining text-center">نظری تاکنون ثبت نشده است</div>
+                            
+                        {% endfor %}
+            
+                        <form method="post" class="mb-4 text-right" dir="rtl">
+                            {% csrf_token %}
+                            <div class="mb-3">
+                                {{ form.name.label_tag }}
+                                {{ form.name }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.email.label_tag }}
+                                {{ form.email }}
+                            </div>
+                            <div class="mb-3">
+                                {{ form.content.label_tag }}
+                                {{ form.content }}
+                            </div>
+                            <button type="submit" class="btn btn-primary">ارسال نظر</button>
+                        </form>
+                    </div>
+
+                       
+     
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+{% endblock content %}

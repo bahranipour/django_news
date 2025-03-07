@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+{% block title %}صفحه اصلی{% endblock title %}
+{% block content %}
+    <h1 class="text-center mb-4">اخبار فناوری</h1>
+    <div class="container" dir="rtl">
+        <form action="." method="get" class="mb-4">
+            <div class="input-group">
+                
+                {{ search_form.query }}
+                <button type="submit" class="btn btn-primary rounded-0">جستجو</button>
+            </div>
+        </form>
+    </div>
+    <div class="container-fluid">
+        <div class="row" dir="rtl">
+            <div class="col-md-3">
+                <h3 class="text-center">دسته ها</h3>
+                <div class="list-group text-center">
+                    <a href="{% url 'news_list' %}" class="list-group-item list-group-item-action {% if not category %}active{% endif %}">همه</a>
+                    {% for c in categories %}
+                        <a href="{% url 'news_by_category' category_id=c.id %}" class="list-group-item list-group-item-action {% if category.id == c.id %}active{% endif %}">{{c.name}}</a>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="col-md-8">
+                <h2 class="text-muted text-right">{% if category %}{{ category.name }}{% else %}همه{% endif %}</h2>
+                <hr>
+                {% for news in page_obj %}
+                    <div class="media text-right border p-3 bg-white" dir="rtl">
+                        {% if news.image %}
+                            <img src="{{ news.image.url }}" alt="{{news.title}}" class="m-3 rounded" style="width:150px">
+                        {% endif %}
+                        <div class="media-body">
+                            <h2><a href="{% url 'news_detail' pk=news.pk %}" class="text-info text-decoration-none">{{news.title}}</a></h2>
+                            <p>{{ news.content|truncatewords:30}}</p>
+                            <p> نوشته شده توسط: {{news.author}}</p>
+                            <p>دسته بندی: <a href="{% url 'news_by_category'  category_id=news.category.id%}">{{news.category}}</a></p>
+                            <p>تگ ها: 
+                                {% for tag in news.tags.all %}
+                                    <a href="{% url 'news_by_tag' tag_id=tag.id %}">{{tag.name}}</a>{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </p>
+                            <p> تاریخ ایجاد: {{ news.created_at }}</p>
+                            <p>تعداد نظرات: {{ news.comments.count }}</p>
+                          
+                        </div>
+                    </div>
+                    <br>
+                {% endfor %}
+            </div>
+        </div>
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a href="?page=1" class="page-link"><span>&laquo; اولین</span></a>
+                </li>
+                <li class="page-item">
+                    <a href="?page={{ page_obj.previous_page_number}}" class="page-link">
+                        <span>قبلی</span>
+                    </a>
+                </li>
+            {% endif %}
+            <li class="page-item disabled">
+                <span class="page-link">صفحه {{ page_obj.number }} از {{ page_obj.paginator.num_pages }}</span>
+            </li>
+            {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a href="?page={{ page_obj.next_page_number}}" class="page-link">
+                        <span>بعدی</span>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a href="?page={{ page_obj.paginator.num_pages }}" class="page-link">
+                        <span> آخرین &raquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+{% endblock content %}
